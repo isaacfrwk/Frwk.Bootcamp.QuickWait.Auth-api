@@ -37,9 +37,21 @@ public class UserSystem {
     @Size(max = 120)
     private String password;
 
-    public UserSystem(String username, String email, String password) {
+    @Size(max = 11)
+    private String cpf;
+
+    @Size(max = 11)
+    private String phoneNumber;
+
+    @Size(max = 8)
+    private String birthDate;
+
+    public UserSystem(String username, String email, String password, String cpf, String phoneNumber, String birthDate) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.cpf = cpf;
+        this.phoneNumber = phoneNumber;
+        this.birthDate = birthDate;
     }
 }

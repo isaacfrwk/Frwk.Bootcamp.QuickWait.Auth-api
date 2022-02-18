@@ -59,8 +59,7 @@ public class AuthService {
 
         UserSystem user = new UserSystem(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
-                encoder.encode(signUpRequest.getPassword()));
-
+                encoder.encode(signUpRequest.getPassword()), signUpRequest.getCpf(), signUpRequest.getPhoneNumber(), signUpRequest.getBirthDate());
 
         userRepository.save(user);
 
