@@ -10,11 +10,11 @@ import javax.validation.constraints.Size;
 @Data
 public class SignupRequest {
     @NotBlank
-    @Size(min = 3, max = 20)
+    @Size(min = 4, max = 20)
     private String username;
 
     @NotBlank
-    @Size(max = 50)
+    @Size(min = 15, max = 50)
     @Email
     private String email;
 
@@ -26,7 +26,7 @@ public class SignupRequest {
     private String cpf;
 
     @JsonProperty("phone_number")
-    @Size(min = 11, max = 11)
+    @Size(min = 8, max = 11)
     private String phoneNumber;
 
     @JsonProperty("birth_date")

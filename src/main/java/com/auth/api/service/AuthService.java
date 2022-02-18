@@ -30,6 +30,12 @@ public class AuthService {
     private JwtUtils jwtUtils;
 
     public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest) {
+        if (!userRepository.existsByUsername(loginRequest.getUsername())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: Username does not exist!"));
+        }
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
 

@@ -40,7 +40,7 @@ public class UserSystem {
     @Size(min = 11, max = 11)
     private String cpf;
 
-    @Size(min = 11, max = 11)
+    @Size(min = 8, max = 11)
     private String phoneNumber;
 
     @Size(min = 8, max = 8)
