@@ -57,6 +57,12 @@ public class AuthService {
                     .body(new MessageResponse("Error: Email is already in use!"));
         }
 
+        if (signUpRequest.getCpf() != null && userRepository.existsByCpf(signUpRequest.getCpf())) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: CPF is already in use!"));
+        }
+
         UserSystem user = new UserSystem(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()), signUpRequest.getCpf(), signUpRequest.getPhoneNumber(), signUpRequest.getBirthDate());

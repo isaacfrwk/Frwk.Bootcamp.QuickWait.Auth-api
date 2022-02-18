@@ -37,13 +37,13 @@ public class UserSystem {
     @Size(max = 120)
     private String password;
 
-    @Size(max = 11)
+    @Size(min = 11, max = 11)
     private String cpf;
 
-    @Size(max = 11)
+    @Size(min = 11, max = 11)
     private String phoneNumber;
 
-    @Size(max = 8)
+    @Size(min = 8, max = 8)
     private String birthDate;
 
     public UserSystem(String username, String email, String password, String cpf, String phoneNumber, String birthDate) {
