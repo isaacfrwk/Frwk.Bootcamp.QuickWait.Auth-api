@@ -77,4 +77,5 @@ public class AuthService {
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+
 }
