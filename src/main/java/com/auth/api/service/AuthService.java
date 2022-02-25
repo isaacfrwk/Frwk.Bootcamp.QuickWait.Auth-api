@@ -2,14 +2,14 @@ package com.auth.api.service;
 
 import com.auth.api.dto.request.LoginRequest;
 import com.auth.api.dto.request.SignupRequest;
-import com.auth.api.dto.response.JwtResponse;
-import com.auth.api.dto.response.MessageResponse;
+import com.auth.api.dto.response.Response;
 import com.auth.api.entity.UserSystem;
 import com.auth.api.repository.UserSystemRepository;
 import com.auth.api.security.jwt.JwtUtils;
 import com.auth.api.security.services.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,11 +29,11 @@ public class AuthService {
     private PasswordEncoder encoder;
     private JwtUtils jwtUtils;
 
-    public ResponseEntity<?> authenticateUser(@Valid LoginRequest loginRequest) {
+    public ResponseEntity<Response> authenticateUser(@Valid LoginRequest loginRequest) {
         if (!userRepository.existsByUsername(loginRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username does not exist!"));
+                    .body(new Response.MessageResponse("Error: Username does not exist!", HttpStatus.BAD_REQUEST.value()));
         }
 
         Authentication authentication = authenticationManager.authenticate(
@@ -44,29 +44,29 @@ public class AuthService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
 
-        return ResponseEntity.ok(new JwtResponse(jwt,
+        return ResponseEntity.ok(new Response.JwtResponse(jwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
-                userDetails.getEmail()));
+                userDetails.getEmail(), HttpStatus.OK.value()));
     }
 
-    public ResponseEntity<?> registerUser(@Valid SignupRequest signUpRequest) {
+    public ResponseEntity<Response> registerUser(@Valid SignupRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Username is already taken!"));
+                    .body(new Response.MessageResponse("Error: Username is already taken!", HttpStatus.BAD_REQUEST.value()));
         }
 
         if (userRepository.existsByEmail(signUpRequest.getEmail())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: Email is already in use!"));
+                    .body(new Response.MessageResponse("Error: Email is already in use!", HttpStatus.BAD_REQUEST.value()));
         }
 
         if (signUpRequest.getCpf() != null && userRepository.existsByCpf(signUpRequest.getCpf())) {
             return ResponseEntity
                     .badRequest()
-                    .body(new MessageResponse("Error: CPF is already in use!"));
+                    .body(new Response.MessageResponse("Error: CPF is already in use!", HttpStatus.BAD_REQUEST.value()));
         }
 
         UserSystem user = new UserSystem(signUpRequest.getUsername(),
@@ -75,7 +75,7 @@ public class AuthService {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new Response.MessageResponse("User registered successfully!", HttpStatus.OK.value()));
     }
 
 }
