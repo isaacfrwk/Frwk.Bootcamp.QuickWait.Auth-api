@@ -15,34 +15,34 @@ import javax.validation.constraints.Size;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "users",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
-        })
+@Table(name = "USERS")
 public class UserSystem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank
-    @Size(max = 20)
+
+    @Column(name = "USERNAME", nullable = false, unique = true)
+    @Size(min = 4, max = 20)
     private String username;
 
-    @NotBlank
-    @Size(max = 50)
+    @Column(name = "EMAIL", nullable = false, unique = true)
+    @Size(min = 15, max = 50)
     @Email
     private String email;
 
-    @NotBlank
+    @Column(name = "PASSWORD", nullable = false)
     @Size(max = 120)
     private String password;
 
+    @Column(name = "CPF", unique = true)
     @Size(min = 11, max = 11)
     private String cpf;
 
+    @Column(name = "PHONE_NUMBER")
     @Size(min = 8, max = 11)
     private String phoneNumber;
 
+    @Column(name = "BIRTH_DATE")
     @Size(min = 8, max = 8)
     private String birthDate;
 

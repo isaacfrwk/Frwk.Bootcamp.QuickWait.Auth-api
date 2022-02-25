@@ -7,6 +7,7 @@ import com.auth.api.entity.UserSystem;
 import com.auth.api.repository.UserSystemRepository;
 import com.auth.api.security.jwt.JwtUtils;
 import com.auth.api.security.services.UserDetailsImpl;
+import com.auth.api.validation.UserValidation;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,11 +31,7 @@ public class AuthService {
     private JwtUtils jwtUtils;
 
     public ResponseEntity<Response> authenticateUser(@Valid LoginRequest loginRequest) {
-        if (!userRepository.existsByUsername(loginRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new Response.MessageResponse("Error: Username does not exist!", HttpStatus.BAD_REQUEST.value()));
-        }
+        UserValidation.loginValidation(loginRequest, existsByUsername(loginRequest.getUsername()));
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -51,23 +48,10 @@ public class AuthService {
     }
 
     public ResponseEntity<Response> registerUser(@Valid SignupRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new Response.MessageResponse("Error: Username is already taken!", HttpStatus.BAD_REQUEST.value()));
-        }
-
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new Response.MessageResponse("Error: Email is already in use!", HttpStatus.BAD_REQUEST.value()));
-        }
-
-        if (signUpRequest.getCpf() != null && userRepository.existsByCpf(signUpRequest.getCpf())) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new Response.MessageResponse("Error: CPF is already in use!", HttpStatus.BAD_REQUEST.value()));
-        }
+        UserValidation.signupValidation(signUpRequest,
+                                        existsByUsername(signUpRequest.getUsername()),
+                                        existsByEmail(signUpRequest.getEmail()),
+                                signUpRequest.getCpf() != null && existsByCpf(signUpRequest.getCpf()));
 
         UserSystem user = new UserSystem(signUpRequest.getUsername(),
                 signUpRequest.getEmail(),
@@ -78,4 +62,15 @@ public class AuthService {
         return ResponseEntity.ok(new Response.MessageResponse("User registered successfully!", HttpStatus.OK.value()));
     }
 
+    private boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    private boolean existsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    private boolean existsByCpf(String cpf) {
+        return userRepository.existsByCpf(cpf);
+    }
 }
