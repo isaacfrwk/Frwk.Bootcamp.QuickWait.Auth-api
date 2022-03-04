@@ -8,6 +8,8 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 
 public class UserValidation {
 
+    private static final String NUMERIC_MATCH = "[+-]?\\d*(\\.\\d+)?";
+
     public static void loginValidation(LoginRequest request, boolean userExists) {
         if (isEmpty(request.getUsername())) {
             throw new ValidationException("The username was not informed.");
@@ -33,6 +35,10 @@ public class UserValidation {
 
         if (isEmpty(request.getPassword())) {
             throw new ValidationException("The password was not informed.");
+        }
+
+        if (!request.getCpf().matches(NUMERIC_MATCH)) {
+            throw new ValidationException("The CPF must contain only numbers. ");
         }
 
         if (userExists) {
